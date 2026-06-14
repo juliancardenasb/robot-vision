@@ -13,6 +13,20 @@ python detect.py
 
 El modelo `yolov8n.pt` se descarga automáticamente la primera vez (~6 MB).
 
+## Versiones disponibles
+
+| Script | Display | Cuándo usarlo |
+|--------|---------|---------------|
+| `detect.py` | matplotlib | Wayland (default en GNOME moderno) — más lento (~10 fps) pero estable |
+| `detect_imshow.py` | cv2.imshow + Qt | X11 / Xorg — fluido (~30 fps) pero requiere libs de xcb |
+
+Para usar `detect_imshow.py` en Wayland, instalá las libs de xcb:
+```bash
+sudo apt install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 \
+                 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
+                 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0
+```
+
 ## Controles
 
 | Tecla | Acción |
