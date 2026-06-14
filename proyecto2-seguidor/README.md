@@ -39,8 +39,15 @@ sobre blanco dan valor ALTO. Según qué sensor ve la línea:
 | Blanco | Negro | Girar derecha |
 | Blanco | Blanco | Detenerse |
 
+## Versiones
+
+| Archivo | Estrategia |
+|---------|-----------|
+| `seguidor_linea.ino` | Lógica binaria on/off — fácil de entender |
+| `seguidor_pid.ino` | Control PID — movimiento suave y proporcional |
+
 ## Próximas mejoras
 
-- [ ] Versión con control PID (movimiento suave en lugar de on/off)
+- [ ] Tuning fino del PID (Kp, Ki, Kd)
 - [ ] Agregar tercer sensor central para más precisión
 - [ ] Memoria de última dirección para recuperar línea perdida
