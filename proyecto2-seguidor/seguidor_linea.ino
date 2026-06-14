@@ -1,46 +1,27 @@
-// Seguidor de línea — versión básica (lógica binaria)
+// Seguidor de línea — versión Wokwi (motores simulados con LEDs)
 //
-// Sensores IR: leen el piso. En línea negra → valor BAJO. En blanco → valor ALTO.
-// Umbral típico: 500 (mitad del rango 0-1023 del ADC).
+// Sensores IR simulados con potenciómetros (A0, A1).
+// Motores simulados con LEDs en pines PWM (5, 6).
+// Brillo del LED = velocidad del motor correspondiente.
 
 const int SENSOR_IZQ = A0;
 const int SENSOR_DER = A1;
 
-const int MOTOR_IZQ_A = 5;
-const int MOTOR_IZQ_B = 6;
-const int MOTOR_DER_A = 9;
-const int MOTOR_DER_B = 10;
+const int LED_MOTOR_IZQ = 5;
+const int LED_MOTOR_DER = 6;
 
 const int UMBRAL = 500;
 const int VELOCIDAD = 180;  // 0-255
 
 void setup() {
     Serial.begin(9600);
-
-    pinMode(MOTOR_IZQ_A, OUTPUT);
-    pinMode(MOTOR_IZQ_B, OUTPUT);
-    pinMode(MOTOR_DER_A, OUTPUT);
-    pinMode(MOTOR_DER_B, OUTPUT);
+    pinMode(LED_MOTOR_IZQ, OUTPUT);
+    pinMode(LED_MOTOR_DER, OUTPUT);
 }
 
-void motor_izq(int velocidad) {
-    if (velocidad >= 0) {
-        analogWrite(MOTOR_IZQ_A, velocidad);
-        analogWrite(MOTOR_IZQ_B, 0);
-    } else {
-        analogWrite(MOTOR_IZQ_A, 0);
-        analogWrite(MOTOR_IZQ_B, -velocidad);
-    }
-}
-
-void motor_der(int velocidad) {
-    if (velocidad >= 0) {
-        analogWrite(MOTOR_DER_A, velocidad);
-        analogWrite(MOTOR_DER_B, 0);
-    } else {
-        analogWrite(MOTOR_DER_A, 0);
-        analogWrite(MOTOR_DER_B, -velocidad);
-    }
+void motores(int vel_izq, int vel_der) {
+    analogWrite(LED_MOTOR_IZQ, vel_izq);
+    analogWrite(LED_MOTOR_DER, vel_der);
 }
 
 void loop() {
@@ -51,25 +32,22 @@ void loop() {
     bool der_en_linea = der < UMBRAL;
 
     Serial.print("IZQ: "); Serial.print(izq);
-    Serial.print(" | DER: "); Serial.println(der);
+    Serial.print(" | DER: "); Serial.print(der);
+    Serial.print(" | Accion: ");
 
     if (izq_en_linea && der_en_linea) {
-        // ambos sobre la línea → avanzar derecho
-        motor_izq(VELOCIDAD);
-        motor_der(VELOCIDAD);
+        Serial.println("AVANZAR");
+        motores(VELOCIDAD, VELOCIDAD);
     } else if (izq_en_linea && !der_en_linea) {
-        // solo el izquierdo ve la línea → girar a la izquierda
-        motor_izq(0);
-        motor_der(VELOCIDAD);
+        Serial.println("GIRAR IZQUIERDA");
+        motores(0, VELOCIDAD);
     } else if (!izq_en_linea && der_en_linea) {
-        // solo el derecho ve la línea → girar a la derecha
-        motor_izq(VELOCIDAD);
-        motor_der(0);
+        Serial.println("GIRAR DERECHA");
+        motores(VELOCIDAD, 0);
     } else {
-        // ninguno ve la línea → detenerse (o buscar)
-        motor_izq(0);
-        motor_der(0);
+        Serial.println("DETENER");
+        motores(0, 0);
     }
 
-    delay(20);
+    delay(50);
 }

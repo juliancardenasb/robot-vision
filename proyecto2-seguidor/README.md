@@ -3,28 +3,29 @@
 Robot que sigue una línea negra sobre fondo blanco usando 2 sensores IR y 2 motores DC.
 Se simula completo en [Wokwi](https://wokwi.com) — no hace falta hardware físico.
 
-## Cómo correrlo
+## Cómo correrlo en Wokwi
+
+Wokwi no incluye motores DC ni el L298N, así que los sustituimos:
+- **Sensores IR** → potenciómetros (girar = simular ver negro/blanco)
+- **Motores** → LEDs (el brillo PWM = velocidad del motor)
 
 1. Crear cuenta en https://wokwi.com
 2. **New Project → Arduino Uno**
 3. Pegar el contenido de `seguidor_linea.ino` en el panel `sketch.ino`
-4. Agregar los componentes (click derecho → Add Part):
-   - 2 IR Line Tracking Sensors
-   - 1 L298N Motor Driver
-   - 2 DC Motors
+4. Agregar componentes (Add Part):
+   - 2 × Potentiometer
+   - 2 × LED
+   - 2 × Resistor (220Ω)
 
 ## Conexiones
 
 | Componente | Pin Arduino |
 |------------|-------------|
-| Sensor izquierdo (OUT) | A0 |
-| Sensor derecho (OUT)   | A1 |
-| L298N IN1 (motor izq)  | 5  |
-| L298N IN2 (motor izq)  | 6  |
-| L298N IN3 (motor der)  | 9  |
-| L298N IN4 (motor der)  | 10 |
-| VCC sensores y lógica  | 5V |
-| GND                    | GND |
+| Potenciómetro izquierdo (SIG) | A0 |
+| Potenciómetro derecho (SIG)   | A1 |
+| LED izquierdo (ánodo + resistor) | 5 |
+| LED derecho (ánodo + resistor)   | 6 |
+| Extremos de pots y cátodos LEDs | 5V / GND |
 
 ## Lógica
 
