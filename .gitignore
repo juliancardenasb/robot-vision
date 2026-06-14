@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Modelos (pesados, se descargan automático)
+*.pt
+*.pth
+*.onnx
+
+# Ultralytics cache
+runs/
+
+# Capturas temporales
+*.jpg
+*.png
+*.mp4
+!assets/         # excepto la carpeta assets (para demos)
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
