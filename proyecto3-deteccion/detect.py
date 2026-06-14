@@ -1,21 +1,34 @@
 from pathlib import Path
 
 import cv2
+import matplotlib.pyplot as plt
 from ultralytics import YOLO
 
 MODEL_PATH = Path(__file__).parent / "yolov8n.pt"
-WINDOW_NAME = "Deteccion de objetos — presiona Q para salir"
 
 
 def cargar_modelo() -> YOLO:
     return YOLO(str(MODEL_PATH))
 
 
-def abrir_camara(indice: int = 0) -> cv2.VideoCapture:
-    cap = cv2.VideoCapture(indice)
-    if not cap.isOpened():
-        raise RuntimeError(f"No se pudo abrir la cámara (índice {indice})")
-    return cap
+def abrir_camara() -> cv2.VideoCapture:
+    for indice in range(3):
+        cap = cv2.VideoCapture(indice, cv2.CAP_V4L2)
+        if not cap.isOpened():
+            cap.release()
+            continue
+
+        for _ in range(30):
+            cap.read()
+
+        ret, frame = cap.read()
+        if ret and frame is not None and frame.mean() > 1:
+            print(f"Cámara encontrada en índice {indice}")
+            return cap
+
+        cap.release()
+
+    raise RuntimeError("No se encontró ninguna cámara funcional")
 
 
 def procesar_frame(frame, modelo: YOLO):
@@ -30,23 +43,34 @@ def main():
 
     cap = abrir_camara()
 
-    print(f"Corriendo. Presioná Q en la ventana para salir.")
+    print("Corriendo. Cerrá la ventana de matplotlib para salir.")
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            print("No se pudo leer el frame. Saliendo.")
-            break
+    plt.ion()
+    fig, ax = plt.subplots(figsize=(10, 7))
+    ax.axis("off")
+    img_plot = None
 
-        frame_anotado = procesar_frame(frame, modelo)
-        cv2.imshow(WINDOW_NAME, frame_anotado)
+    try:
+        while plt.fignum_exists(fig.number):
+            ret, frame = cap.read()
+            if not ret:
+                break
 
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
+            frame_anotado = procesar_frame(frame, modelo)
+            frame_rgb = cv2.cvtColor(frame_anotado, cv2.COLOR_BGR2RGB)
 
-    cap.release()
-    cv2.destroyAllWindows()
-    print("Cerrado correctamente.")
+            if img_plot is None:
+                img_plot = ax.imshow(frame_rgb)
+            else:
+                img_plot.set_data(frame_rgb)
+
+            plt.pause(0.001)
+    except KeyboardInterrupt:
+        print("Interrumpido por usuario.")
+    finally:
+        cap.release()
+        plt.close("all")
+        print("Cerrado correctamente.")
 
 
 if __name__ == "__main__":
