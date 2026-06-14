@@ -19,6 +19,7 @@ El modelo `yolov8n.pt` se descarga automáticamente la primera vez (~6 MB).
 |--------|---------|---------------|
 | `detect.py` | matplotlib | Wayland (default en GNOME moderno) — más lento (~10 fps) pero estable |
 | `detect_imshow.py` | cv2.imshow + Qt | X11 / Xorg — fluido (~30 fps) pero requiere libs de xcb |
+| `detect_web.py` | navegador (Flask + MJPEG) | Funciona en cualquier sistema, accesible desde el navegador |
 
 Para usar `detect_imshow.py` en Wayland, instalá las libs de xcb:
 ```bash
